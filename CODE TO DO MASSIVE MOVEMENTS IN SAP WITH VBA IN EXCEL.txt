@@ -137,3 +137,70 @@ Next i
 
 
 End Sub
+
+
+
+
+
+'THE NEXT CODE IS FOR CHANGE A DOCUMENT HEADER TEXT MASSIVELY SAVING A LOT OF TIME IN THAT ACTIVITY
+
+Sub JOB()
+'
+'
+'
+Dim sapConn As Object
+Dim Application
+Dim Connection
+Dim MyFile As String
+
+
+Dim Doc As String
+Dim Ano As String
+Dim Sum
+
+
+
+
+If Not IsObject(Application) Then
+   Set SapGuiAuto = GetObject("SAPGUI")
+   Set Application = SapGuiAuto.GetScriptingEngine
+End If
+If Not IsObject(Connection) Then
+   Set Connection = Application.Children(0)
+End If
+If Not IsObject(session) Then
+   Set session = Connection.Children(0)
+End If
+If IsObject(WScript) Then
+   WScript.ConnectObject session, "on"
+   WScript.ConnectObject Application, "on"
+End If
+
+For i = 1 To 2
+
+
+Sum = Sum + 1
+
+Doc = Range("ASum").Value
+
+session.findById("wnd[0]").resizeWorkingPane 88, 32, False
+session.findById("wnd[0]/usr/ctxtRM07M-MBLNR").Text = "& Doc"
+session.findById("wnd[0]/usr/txtRM07M-MJAHR").Text = "2022"
+session.findById("wnd[0]/usr/txtRM07M-MJAHR").SetFocus
+session.findById("wnd[0]/usr/txtRM07M-MJAHR").caretPosition = 4
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/tbar[0]/btn[11]").press
+
+
+
+myText = session.findById("wnd[0]/usr/ctxtRM07M-MBLNR").Text
+
+MsgBox "(" & myText & ")"
+
+Worksheets("JOB").Range("BSum").Value = myText
+
+      
+      
+Next i
+
+End Sub
