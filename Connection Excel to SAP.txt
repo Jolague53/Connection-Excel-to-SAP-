@@ -1,0 +1,51 @@
+Sub CONNECT_TO_SAP()
+'
+'
+
+Dim sapConn As Object
+Dim Applicationn
+Dim Connection
+Dim MyFile As String
+
+
+
+Dim Ruta As String, archivo As String, ultArchivo As String
+Dim ultFecha As Date, UFM As Date 'fecha última modificación
+    
+
+
+If Not IsObject(Applicationn) Then
+   Set SapGuiAuto = GetObject("SAPGUI")
+   Set Applicationn = SapGuiAuto.GetScriptingEngine
+End If
+If Not IsObject(Connection) Then
+   Set Connection = Applicationn.Children(0)
+End If
+If Not IsObject(session) Then
+   Set session = Connection.Children(0)
+End If
+If IsObject(WScript) Then
+   WScript.ConnectObject session, "on"
+   WScript.ConnectObject Applicationn, "on"
+End If
+
+
+     
+'--------------------------------------ENTER SAP--------------------------------------
+session.findById("wnd[0]").maximize
+session.findById("wnd[0]/usr/txtRSYST-MANDT").Text = "INSTANCE"
+session.findById("wnd[0]/usr/txtRSYST-BNAME").Text = "USER"
+session.findById("wnd[0]/usr/pwdRSYST-BCODE").Text = "PASSWORD"
+session.findById("wnd[0]/usr/pwdRSYST-BCODE").SetFocus
+session.findById("wnd[0]/usr/pwdRSYST-BCODE").caretPosition = 8
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[1]/usr/radMULTI_LOGON_OPT2").Select
+session.findById("wnd[1]/usr/radMULTI_LOGON_OPT2").SetFocus
+session.findById("wnd[1]").sendVKey 0
+
+
+End Sub
+
+
+
+
