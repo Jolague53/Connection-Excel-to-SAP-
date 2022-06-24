@@ -1,0 +1,139 @@
+'THIS CODE CONNECT MACROS IN EXCEL (VBA) TO ENTER IN SAP AND DO MASSIVE MOVEMENTS (EXAMPLES; CONVERT PART NUMBERS MASSIVELY, DO CONSUMPTION OF STOCK AUTOMATICALLY,
+AND DO INFINITE THINGS AND MOVEMENTS
+
+
+
+'IN THIS CASE THE NEXT CODE IS FOR CONVERT PART NUMBERS MASSIVELY IN TRANSACTION MB1B AND LT01 (THAT CODES MAY CHANGE IN YOUR COMPANY)
+
+Sub CONVERT_PN_MASSIVELY()
+'
+'
+'
+Dim sapConn As Object
+Dim Application
+Dim Connection
+Dim MyFile As String
+
+Dim Num As String
+Dim Sloc As String
+Dim NPEntrada As String
+Dim NPSalida As String
+Dim QTYEntrada As String
+Dim TPE As String
+Dim BINEntrada As String
+Dim BINSalida As String
+Dim Diferencia As Long
+
+
+
+
+If Not IsObject(Application) Then
+   Set SapGuiAuto = GetObject("SAPGUI")
+   Set Application = SapGuiAuto.GetScriptingEngine
+End If
+If Not IsObject(Connection) Then
+   Set Connection = Application.Children(0)
+End If
+If Not IsObject(session) Then
+   Set session = Connection.Children(0)
+End If
+If IsObject(WScript) Then
+   WScript.ConnectObject session, "on"
+   WScript.ConnectObject Application, "on"
+End If
+
+
+For i = 1 To 1000
+
+'----------------------------------VARIABLES WITHIN CELLS IN EXCEL----------------------------------
+Num = Range("A3").Value
+Sloc = Range("D3").Value
+NPEntrada = Range("I3").Value
+NPSalida = Range("G3").Value
+QTYEntrada = Range("L3").Value
+
+TPE = Range("M3").Value
+BINEntrada = Range("E3").Value
+BINSalida = Range("F3").Value
+
+
+'----------------------------------MB1B----------------------------------
+session.findById("wnd[0]/tbar[0]/okcd").Text = "MB1B"
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/usr/txtRM07M-MTSNR").Text = "NAME"
+session.findById("wnd[0]/usr/txtMKPF-BKTXT").Text = "" & Num & "_TEXT OF YOUR PREFERENCE_" & Format(Now(), "YYYYMMDD")
+session.findById("wnd[0]/usr/ctxtRM07M-BWARTWA").Text = "309"
+session.findById("wnd[0]/usr/ctxtRM07M-WERKS").Text = "PLANT"
+
+session.findById("wnd[0]/usr/ctxtRM07M-LGORT").Text = "" & Sloc
+session.findById("wnd[0]/usr/ctxtRM07M-LGORT").SetFocus
+session.findById("wnd[0]/usr/ctxtRM07M-LGORT").caretPosition = 4
+session.findById("wnd[0]").sendVKey 0
+
+session.findById("wnd[0]/usr/ctxtMSEGK-UMMAT").Text = "" & NPEntrada
+session.findById("wnd[0]/usr/sub:SAPMM07M:0421/ctxtMSEG-MATNR[0,7]").Text = "" & NPSalida
+session.findById("wnd[0]/usr/sub:SAPMM07M:0421/txtMSEG-ERFMG[0,26]").Text = "" & QTYEntrada
+session.findById("wnd[0]/usr/sub:SAPMM07M:0421/txtMSEG-ERFMG[0,26]").SetFocus
+session.findById("wnd[0]/usr/sub:SAPMM07M:0421/txtMSEG-ERFMG[0,26]").caretPosition = 1
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/tbar[0]/btn[0]").press
+session.findById("wnd[0]").sendVKey 11
+session.findById("wnd[0]/tbar[0]/btn[3]").press
+
+
+
+
+
+'------------------------------------LT01----------------------------------
+session.findById("wnd[0]/tbar[0]/okcd").Text = "LT01"
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/usr/ctxtLTAK-LGNUM").Text = "WAREHOUSE NUMBER"
+session.findById("wnd[0]/usr/ctxtLTAK-BWLVS").Text = "999"
+session.findById("wnd[0]/usr/ctxtLTAP-MATNR").Text = "" & NPSalida
+session.findById("wnd[0]/usr/txtRL03T-ANFME").Text = "" & QTYEntrada
+session.findById("wnd[0]/usr/ctxtLTAP-WERKS").Text = "PLANT"
+session.findById("wnd[0]/usr/ctxtLTAP-LGORT").Text = "" & Sloc
+session.findById("wnd[0]/usr/ctxtLTAP-WERKS").SetFocus
+session.findById("wnd[0]/usr/ctxtLTAP-WERKS").caretPosition = 4
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/usr/chkRL03T-SQUIT").Selected = True
+session.findById("wnd[0]/usr/ctxtLTAP-LETYP").Text = "PX"
+session.findById("wnd[0]/usr/txtLTAP-ZEUGN").Text = "NAME"
+
+session.findById("wnd[0]/usr/ctxtLTAP-VLTYP").Text = "" & TPE
+session.findById("wnd[0]/usr/txtLTAP-VLPLA").Text = "" & BINSalida
+session.findById("wnd[0]/usr/ctxtLTAP-NLTYP").Text = "922"
+session.findById("wnd[0]/usr/txtLTAP-NLPLA").Text = "TR-ZONE"
+session.findById("wnd[0]/usr/txtLTAP-NLPLA").SetFocus
+session.findById("wnd[0]/usr/txtLTAP-NLPLA").caretPosition = 7
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]").sendVKey 0
+
+session.findById("wnd[0]/usr/ctxtLTAK-LGNUM").Text = "WH1"
+session.findById("wnd[0]/usr/ctxtLTAP-MATNR").Text = "" & NPEntrada
+session.findById("wnd[0]/usr/txtRL03T-ANFME").Text = "" & QTYEntrada
+session.findById("wnd[0]/usr/ctxtLTAP-LGORT").Text = "" & Sloc
+session.findById("wnd[0]/usr/ctxtLTAP-LGORT").SetFocus
+session.findById("wnd[0]/usr/ctxtLTAP-LGORT").caretPosition = 4
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]/usr/chkRL03T-SQUIT").Selected = True
+session.findById("wnd[0]/usr/ctxtLTAP-LETYP").Text = "PX"
+session.findById("wnd[0]/usr/txtLTAP-ZEUGN").Text = "NAME"
+session.findById("wnd[0]/usr/ctxtLTAP-VLTYP").Text = "922"
+session.findById("wnd[0]/usr/txtLTAP-VLPLA").Text = "TR-ZONE"
+session.findById("wnd[0]/usr/ctxtLTAP-NLTYP").Text = "" & TPE
+session.findById("wnd[0]/usr/txtLTAP-NLPLA").Text = "" & BINEntrada
+session.findById("wnd[0]/usr/txtLTAP-NLPLA").SetFocus
+session.findById("wnd[0]/usr/txtLTAP-NLPLA").caretPosition = 5
+session.findById("wnd[0]").sendVKey 0
+session.findById("wnd[0]").sendVKey 0
+
+Rows("3:3").Select
+    Selection.Delete Shift:=xlUp
+    
+session.findById("wnd[0]/tbar[0]/btn[3]").press
+
+Next i
+
+
+End Sub
