@@ -7,10 +7,6 @@ Dim Applicationn
 Dim Connection
 Dim MyFile As String
 
-
-
-Dim Ruta As String, archivo As String, ultArchivo As String
-Dim ultFecha As Date, UFM As Date 'fecha última modificación
     
 
 
