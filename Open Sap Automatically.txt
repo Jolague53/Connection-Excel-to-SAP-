@@ -1,0 +1,55 @@
+Sub OPEN_SAP()
+
+Dim sapConn As Object
+Dim Applicationn
+Dim Appl As Object
+Dim Connection
+Dim MyFile As String
+Dim cObj As Object
+Dim Programa As Object
+Dim Proceso As Object
+
+Shell "C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe", 4
+
+
+Set WshShell = CreateObject("WScript.Shell")
+  Do Until WshShell.AppActivate("SAP Logon ")
+    Application.Wait Now + TimeValue("0:00:05")
+  Loop
+  
+  
+If Not IsObject(Applicationn) Then
+   Set SapGuiAuto = GetObject("SAPGUI")
+   Set Applicationn = SapGuiAuto.GetScriptingEngine
+End If
+If Not IsObject(Connection) Then
+
+   Set Connection = Applicationn.Openconnection("NAME OF SESSION", True)
+   
+End If
+If Not IsObject(session) Then
+   Set session = Connection.Children(0)
+End If
+If IsObject(WScript) Then
+   WScript.ConnectObject session, "on"
+   WScript.ConnectObject Applicationn, "on"
+End If
+
+ 
+session.findById("wnd[0]/usr/txtRSYST-MANDT").Text = "INSTANCE"
+session.findById("wnd[0]/usr/txtRSYST-BNAME").Text = "USER"
+session.findById("wnd[0]/usr/pwdRSYST-BCODE").Text = "PASSWORD"
+
+
+Set cObj = GetObject("winmgmts://.")
+Set Proceso = cObj.ExecQuery("SELECT * FROM " & _
+"Win32_Process WHERE Name = 'saplogon.exe'")
+For Each Programa In Proceso
+On Error Resume Next
+Call Programa.Terminate
+On Error GoTo 0
+Next
+
+
+'
+End Sub
